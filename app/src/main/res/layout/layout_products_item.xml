@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2020 OlehKapustianov.
+  -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="4dp"
+    android:layout_marginEnd="4dp">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/productsItemMetadataContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="0dp"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="4dp"
+        app:cardElevation="4dp"
+        app:cardUseCompatPadding="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingStart="8dp"
+            android:paddingTop="16dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="16dp">
+
+            <ImageView
+                android:id="@+id/productsItemImageView"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:elevation="4dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/background_no_image"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/productsItemNameTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/dark_grey"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:text="Moonlight" />
+
+            <TextView
+                android:id="@+id/productsItemBrandTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/dark_grey"
+                android:textSize="14sp"
+                android:visibility="gone"
+                tools:text="by Brand" />
+
+            <TextView
+                android:id="@+id/productsItemSizeTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/dark_grey"
+                android:textSize="14sp"
+                tools:text="Size" />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>
