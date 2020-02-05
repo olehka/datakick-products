@@ -13,6 +13,7 @@ const val UNAVAILABLE = "Unavailable"
 // Local Repository
 const val PRODUCTS_DATABASE_NAME = "products.db"
 const val GET_ALL_PRODUCTS_QUERY = "SELECT * FROM Product"
+const val SEARCH_PRODUCTS_QUERY = "SELECT * FROM Product WHERE name LIKE :query"
 
 // Model
 const val KEY_PRODUCT_ID = "gtin14"

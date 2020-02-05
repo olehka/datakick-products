@@ -20,14 +20,23 @@
         app:spanCount="2"
         tools:listitem="@layout/layout_products_item" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:src="@drawable/ic_search_black_24dp"
+        android:contentDescription="@string/search"
+        android:layout_margin="16dp" />
+
     <TextView
         android:id="@+id/productsLoadingMessageTextView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/darker_grey"
+        android:background="@color/whitish"
         android:gravity="center"
         android:text="@string/products_empty_message_0"
-        android:textColor="@color/white"
+        android:textColor="@color/dark_grey"
         android:textSize="20sp"
         android:textStyle="bold" />
 
@@ -35,7 +44,7 @@
         android:id="@+id/productsInternetUnavailableContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/darker_grey"
+        android:background="@color/whitish"
         android:gravity="center"
         android:orientation="vertical"
         android:padding="16dp"
@@ -45,10 +54,10 @@
             android:id="@+id/productsInternetUnavailableTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/darker_grey"
+            android:background="@color/whitish"
             android:gravity="center"
             android:text="@string/products_internet_unavailable_message"
-            android:textColor="@color/white"
+            android:textColor="@color/dark_grey"
             android:textSize="20sp"
             android:textStyle="bold"
             android:visibility="visible" />

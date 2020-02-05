@@ -17,17 +17,17 @@ class ProductsRepository(
         private val remoteRepository: RemoteRepository,
         private val executor: Executor) {
 
-    fun getProducts(): LiveData<List<Product>> {
-        refreshProducts()
-        return localRepository.getProducts()
+    fun getProducts(query: String = ""): LiveData<List<Product>> {
+        refreshProducts(query)
+        return localRepository.getProducts(query)
     }
 
-    fun refreshProducts() {
+    fun refreshProducts(query: String = "") {
         if (!connectivityAgent.isDeviceConnectedToInternet())
             return
 
         executor.execute {
-            val response = remoteRepository.getProducts().execute()
+            val response = remoteRepository.getProducts(query).execute()
             response.body()?.toTypedArray()?.let {
                 localRepository.saveProducts(it)
             }

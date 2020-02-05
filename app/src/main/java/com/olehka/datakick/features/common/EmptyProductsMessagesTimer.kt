@@ -2,7 +2,7 @@
  * Copyright (c) 2020 OlehKapustianov.
  */
 
-package com.olehka.datakick.features.productslist
+package com.olehka.datakick.features.common
 
 import android.content.Context
 import android.os.CountDownTimer

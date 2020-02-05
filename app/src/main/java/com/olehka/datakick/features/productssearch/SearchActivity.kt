@@ -1,54 +1,84 @@
-/*
- * Copyright (c) 2020 OlehKapustianov.
- */
+package com.olehka.datakick.features.productssearch
 
-package com.olehka.datakick.features.productslist
-
-import android.content.Intent
+import android.content.Context
 import android.os.Bundle
+import android.os.IBinder
+import android.util.Log
+import android.view.KeyEvent
 import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.olehka.datakick.R
 import com.olehka.datakick.features.common.EmptyProductsMessagesTimer
 import com.olehka.datakick.features.common.ProductsAdapter
 import com.olehka.datakick.features.common.ProductsLoadingState
-import com.olehka.datakick.features.productssearch.SearchActivity
 import com.olehka.datakick.repository.model.Product
-import kotlinx.android.synthetic.main.activity_products.*
+import kotlinx.android.synthetic.main.activity_search.*
 import org.koin.android.architecture.ext.viewModel
 
-class ProductsActivity : AppCompatActivity() {
+class SearchActivity : AppCompatActivity() {
 
-    private val viewModel by viewModel<ProductsViewModel>()
+    private val viewModel by viewModel<SearchViewModel>()
     private val adapter by lazy { ProductsAdapter() }
     private lateinit var countDownTimer: EmptyProductsMessagesTimer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_products)
+        setContentView(R.layout.activity_search)
         setUpProductsList()
-        setUpProductsListener()
-        setUpFloatingActionButton()
+        setUpSearchInputListener()
+        checkInputSearch(savedInstanceState)
     }
 
-    private fun setUpFloatingActionButton() {
-        fabSearch.setOnClickListener {
-            startActivity(Intent(this, SearchActivity::class.java))
+    private fun setUpSearchInputListener() {
+        inputSearch.setOnEditorActionListener { view: View, actionId: Int, _: KeyEvent? ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                doSearch(view)
+                true
+            } else {
+                false
+            }
+        }
+        inputSearch.setOnKeyListener { view: View, keyCode: Int, event: KeyEvent ->
+            if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                doSearch(view)
+                true
+            } else {
+                false
+            }
         }
     }
 
-    private fun setUpProductsList() {
-        productsRecyclerView.adapter = adapter
+    private fun checkInputSearch(savedInstanceState: Bundle?) {
+        if (savedInstanceState != null && savedInstanceState.containsKey(KEY_INPUT_SEARCH)) {
+            val query = savedInstanceState.getString(KEY_INPUT_SEARCH)
+            if (query.isNullOrEmpty()) {
+                return
+            }
+            Log.d("SearchActivity", "checkInputSearch: $query")
+            observeProducts(query)
+        }
     }
 
-    private fun setUpProductsListener() {
-        viewModel.getProducts().observe(this, Observer {
+    private fun doSearch(v: View) {
+        val query = inputSearch.text.toString()
+        dismissKeyboard(v.windowToken)
+        observeProducts(query)
+    }
+
+    private fun observeProducts(query: String) {
+        viewModel.getProducts(query).observe(this, Observer {
             if (it.isNullOrEmpty())
                 onProductsListEmpty()
             else
                 displayProducts(it)
         })
+    }
+
+    private fun setUpProductsList() {
+        productsRecyclerView.adapter = adapter
     }
 
     private fun onProductsListEmpty() {
@@ -62,7 +92,8 @@ class ProductsActivity : AppCompatActivity() {
                 {
                     onProductsLoadingStateChanged(ProductsLoadingState.ERROR)
                     productsInternetUnavailableButton.setOnClickListener {
-                        viewModel.refreshProducts()
+                        val query = inputSearch.text.toString()
+                        viewModel.refreshProducts(query)
                         onProductsListEmpty()
                     }
                 }
@@ -96,8 +127,22 @@ class ProductsActivity : AppCompatActivity() {
         }
     }
 
+    private fun dismissKeyboard(windowToken: IBinder) {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        imm?.hideSoftInputFromWindow(windowToken, 0)
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         if (::countDownTimer.isInitialized) countDownTimer.cancel()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(KEY_INPUT_SEARCH, inputSearch.text.toString())
+    }
+
+    companion object {
+        const val KEY_INPUT_SEARCH = "key_input_search"
     }
 }
