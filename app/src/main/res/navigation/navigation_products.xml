@@ -2,15 +2,16 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@id/product_list_fragment"
     android:id="@+id/navigation_products">
 
     <fragment
-        android:id="@+id/products_fragment"
+        android:id="@+id/product_list_fragment"
         android:name="com.olehka.datakick.features.productslist.ProductsFragment"
         tools:layout="@layout/fragment_product_list">
 
         <action
-            android:id="@+id/action_products_fragment_to_product_detail_fragment"
+            android:id="@+id/action_product_list_fragment_to_product_details_fragment"
             app:destination="@id/product_detail_fragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"

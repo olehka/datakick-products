@@ -8,6 +8,7 @@ import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.olehka.datakick.R
@@ -15,12 +16,14 @@ import com.olehka.datakick.features.common.EmptyProductsMessagesTimer
 import com.olehka.datakick.features.common.ProductsAdapter
 import com.olehka.datakick.features.common.ProductsLoadingState
 import com.olehka.datakick.repository.model.Product
+import com.olehka.datakick.InjectorUtils
 import kotlinx.android.synthetic.main.activity_search.*
-import org.koin.android.architecture.ext.viewModel
 
 class SearchActivity : AppCompatActivity() {
 
-    private val viewModel by viewModel<SearchViewModel>()
+    private val viewModel: SearchViewModel by viewModels {
+        InjectorUtils.provideSearchViewModelFactory(this)
+    }
     private val adapter by lazy { ProductsAdapter() }
     private lateinit var countDownTimer: EmptyProductsMessagesTimer
 

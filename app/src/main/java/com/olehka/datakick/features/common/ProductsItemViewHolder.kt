@@ -1,22 +1,28 @@
 package com.olehka.datakick.features.common
 
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import androidx.annotation.LayoutRes
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.squareup.picasso.Picasso
 import com.olehka.datakick.R
+import com.olehka.datakick.databinding.LayoutProductsItemBinding
+import com.olehka.datakick.features.productslist.ProductsFragmentDirections
 import com.olehka.datakick.repository.model.Product
 import com.olehka.datakick.repository.model.ProductImage
 import com.olehka.datakick.utilities.DASH
 import com.olehka.datakick.utilities.EMPTY
 import com.olehka.datakick.utilities.UNAVAILABLE
-import kotlinx.android.synthetic.main.layout_products_item.view.*
+import com.squareup.picasso.Picasso
 
 class ProductsItemViewHolder(
-        parent: ViewGroup,
-        @LayoutRes itemViewLayoutId: Int
-) : RecyclerView.ViewHolder(LayoutInflater.from(parent.context).inflate(itemViewLayoutId, parent, false)) {
+        private val binding: LayoutProductsItemBinding
+) : RecyclerView.ViewHolder(binding.root) {
+
+    fun setClickListener(productId: String) {
+        binding.root.setOnClickListener {
+            val direction = ProductsFragmentDirections
+                    .actionProductListFragmentToProductDetailsFragment(productId)
+            it.findNavController().navigate(direction)
+        }
+    }
 
     fun render(product: Product) {
         renderProductImage(product.images)
@@ -26,22 +32,22 @@ class ProductsItemViewHolder(
     }
 
     private fun renderProductImage(images: List<ProductImage>) {
-        if (!images.isEmpty())
+        if (images.isNotEmpty())
             Picasso.get()
                     .load(images[0].url)
                     .placeholder(R.drawable.background_no_image)
-                    .into(itemView.productsItemImageView)
+                    .into(binding.productsItemImageView)
     }
 
     private fun renderProductName(name: String) {
-        itemView.productsItemNameTextView.text = name
+        binding.productsItemNameTextView.text = name
     }
 
     private fun renderProductBrand(brand: String) {
-        itemView.productsItemBrandTextView.text = itemView.context.getString(R.string.product_item_brand, if (brand.isBlank()) UNAVAILABLE else brand)
+        binding.productsItemBrandTextView.text = itemView.context.getString(R.string.product_item_brand, if (brand.isBlank()) UNAVAILABLE else brand)
     }
 
     private fun renderProductSize(size: String) {
-        itemView.productsItemSizeTextView.text = itemView.context.getString(R.string.product_item_size, if (size.isBlank()) UNAVAILABLE else size)
+        binding.productsItemSizeTextView.text = itemView.context.getString(R.string.product_item_size, if (size.isBlank()) UNAVAILABLE else size)
     }
 }

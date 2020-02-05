@@ -1,6 +1,8 @@
 package com.olehka.datakick.features.common
 
+import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.olehka.datakick.R
@@ -11,10 +13,16 @@ class ProductsAdapter : RecyclerView.Adapter<ProductsItemViewHolder>() {
 
     private val products: MutableList<Product> = mutableListOf()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ProductsItemViewHolder(parent, R.layout.layout_products_item)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ProductsItemViewHolder(
+            DataBindingUtil.inflate(
+                    LayoutInflater.from(parent.context),
+                    R.layout.layout_products_item, parent, false
+            )
+    )
 
     override fun onBindViewHolder(holder: ProductsItemViewHolder, position: Int) {
         holder.render(products[position])
+        holder.setClickListener(products[position].id)
     }
 
     override fun getItemCount() = products.size

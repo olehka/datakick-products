@@ -1,14 +1,19 @@
 package com.olehka.datakick
 
 import android.app.Application
-import com.olehka.datakick.features.productSearchModule
-import com.olehka.datakick.features.productsListModule
-import org.koin.android.ext.android.startKoin
+import com.olehka.datakick.utilities.API_BASE_URL
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class ProductsApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        startKoin(this, listOf(repositoryModule, productsListModule, productSearchModule))
+        buildRetrofitInstance()
     }
+
+    private fun buildRetrofitInstance() = Retrofit.Builder()
+            .baseUrl(API_BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
 }
