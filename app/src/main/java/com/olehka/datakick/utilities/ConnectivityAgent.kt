@@ -1,7 +1,3 @@
-/*
- * Copyright (c) 2020 OlehKapustianov.
- */
-
 package com.olehka.datakick.utilities
 
 import android.content.Context

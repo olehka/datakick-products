@@ -1,7 +1,3 @@
-/*
- * Copyright (c) 2020 OlehKapustianov.
- */
-
 package com.olehka.datakick.repository.local
 
 import com.olehka.datakick.repository.model.ProductImage

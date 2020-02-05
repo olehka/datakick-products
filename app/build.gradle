@@ -30,28 +30,23 @@ dependencies {
     implementation "com.android.support:design:$supportVersion"
 
     implementation 'com.google.android.material:material:1.1.0'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.2.0'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.2.0'
 
-    // Koin DI
     implementation "org.koin:koin-android-architecture:$koinversion"
 
-    // Room
     implementation "android.arch.persistence.room:runtime:$roomVersion"
     kapt "android.arch.persistence.room:compiler:$roomVersion"
 
-    // Retrofit
     implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
     implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttpLoggingInterceptorVersion"
 
-    // Picasso
     implementation "com.squareup.picasso:picasso:$picassoVersion"
 
-    // Circular image
-    implementation "de.hdodenhof:circleimageview:$circularImageVersion"
-
-    // Testing
     testImplementation "junit:junit:$junitVersion"
     testImplementation "org.mockito:mockito-core:$mockitoVersion"
     androidTestImplementation "com.android.support.test:runner:$testRunnerVersion"
     androidTestImplementation "com.android.support.test.espresso:espresso-core:$espressoVersion"
+
 }

@@ -1,7 +1,3 @@
-/*
- * Copyright (c) 2020 OlehKapustianov.
- */
-
 package com.olehka.datakick.repository.model
 
 import androidx.room.Entity
