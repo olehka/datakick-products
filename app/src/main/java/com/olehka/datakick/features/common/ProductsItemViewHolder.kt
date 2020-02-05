@@ -4,7 +4,6 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.olehka.datakick.R
 import com.olehka.datakick.databinding.LayoutProductsItemBinding
-import com.olehka.datakick.features.productslist.ProductsFragmentDirections
 import com.olehka.datakick.repository.model.Product
 import com.olehka.datakick.repository.model.ProductImage
 import com.olehka.datakick.utilities.DASH
@@ -16,11 +15,9 @@ class ProductsItemViewHolder(
         private val binding: LayoutProductsItemBinding
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun setClickListener(productId: String) {
+    fun setClickListener(productId: String, callback: (id: String) -> Unit) {
         binding.root.setOnClickListener {
-            val direction = ProductsFragmentDirections
-                    .actionProductListFragmentToProductDetailsFragment(productId)
-            it.findNavController().navigate(direction)
+            callback.invoke(productId)
         }
     }
 

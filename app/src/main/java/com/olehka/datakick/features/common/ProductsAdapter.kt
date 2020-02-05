@@ -9,7 +9,9 @@ import com.olehka.datakick.R
 import com.olehka.datakick.repository.model.Product
 import com.olehka.datakick.repository.model.ProductDiffUtilCallback
 
-class ProductsAdapter : RecyclerView.Adapter<ProductsItemViewHolder>() {
+class ProductsAdapter(
+        private val callback: (id: String) -> Unit
+) : RecyclerView.Adapter<ProductsItemViewHolder>() {
 
     private val products: MutableList<Product> = mutableListOf()
 
@@ -22,7 +24,7 @@ class ProductsAdapter : RecyclerView.Adapter<ProductsItemViewHolder>() {
 
     override fun onBindViewHolder(holder: ProductsItemViewHolder, position: Int) {
         holder.render(products[position])
-        holder.setClickListener(products[position].id)
+        holder.setClickListener(products[position].id, callback)
     }
 
     override fun getItemCount() = products.size

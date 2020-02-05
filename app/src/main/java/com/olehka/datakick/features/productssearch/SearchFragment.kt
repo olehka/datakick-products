@@ -1,62 +1,96 @@
-package com.olehka.datakick.features.productslist
+package com.olehka.datakick.features.productssearch
 
-import android.content.Intent
+import android.content.Context
 import android.os.Bundle
+import android.os.IBinder
+import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import com.olehka.datakick.InjectorUtils
-import com.olehka.datakick.databinding.FragmentProductListBinding
+import com.olehka.datakick.databinding.FragmentProductSearchBinding
 import com.olehka.datakick.features.common.EmptyProductsMessagesTimer
 import com.olehka.datakick.features.common.ProductsAdapter
 import com.olehka.datakick.features.common.ProductsLoadingState
-import com.olehka.datakick.features.productssearch.SearchActivity
 import com.olehka.datakick.repository.model.Product
 
-class ProductsFragment : Fragment() {
+class SearchFragment: Fragment() {
 
-    private val viewModel: ProductsViewModel by viewModels {
-        InjectorUtils.provideProductsViewModelFactory(requireContext())
+    private lateinit var binding: FragmentProductSearchBinding
+    private val viewModel: SearchViewModel by viewModels {
+        InjectorUtils.provideSearchViewModelFactory(requireContext())
     }
     private val adapter by lazy { ProductsAdapter{ productId ->
         navigateToDetailsScreen(productId)
     } }
     private lateinit var countDownTimer: EmptyProductsMessagesTimer
-    private lateinit var binding: FragmentProductListBinding
 
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentProductListBinding.inflate(inflater, container, false)
+        binding = FragmentProductSearchBinding.inflate(inflater, container, false)
         setUpProductsList()
-        setUpProductsListener()
-        setUpFloatingActionButton()
+        setUpSearchInputListener()
         return binding.root
     }
 
-    private fun setUpFloatingActionButton() {
-        binding.fabSearch.setOnClickListener {
-            startActivity(Intent(context, SearchActivity::class.java))
+    override fun onStart() {
+        super.onStart()
+        checkInputSearch()
+    }
+
+    private fun setUpSearchInputListener() {
+        binding.inputSearch.setOnEditorActionListener { view: View, actionId: Int, _: KeyEvent? ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                doSearch(view)
+                true
+            } else {
+                false
+            }
+        }
+        binding.inputSearch.setOnKeyListener { view: View, keyCode: Int, event: KeyEvent ->
+            if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                doSearch(view)
+                true
+            } else {
+                false
+            }
         }
     }
 
-    private fun setUpProductsList() {
-        binding.productsRecyclerView.adapter = adapter
+    private fun checkInputSearch() {
+        val query = binding.inputSearch.text.toString()
+        if (query.isNotEmpty()) {
+            observeProducts(query)
+        }
     }
 
-    private fun setUpProductsListener() {
-        viewModel.getProducts().observe(viewLifecycleOwner, Observer {
+    private fun doSearch(v: View) {
+        val query = binding.inputSearch.text.toString()
+        dismissKeyboard(v.windowToken)
+        observeProducts(query)
+    }
+
+    private fun observeProducts(query: String) {
+        viewModel.getProducts(query).observe(viewLifecycleOwner, Observer {
             if (it.isNullOrEmpty())
                 onProductsListEmpty()
             else
                 displayProducts(it)
         })
+    }
+
+    private fun setUpProductsList() {
+        binding.productsRecyclerView.adapter = adapter
     }
 
     private fun onProductsListEmpty() {
@@ -65,12 +99,13 @@ class ProductsFragment : Fragment() {
     }
 
     private fun setUpLoadingMessage() {
-        countDownTimer = EmptyProductsMessagesTimer(context!!,
+        countDownTimer = EmptyProductsMessagesTimer(requireContext(),
                 { binding.productsLoadingMessageTextView.text = it },
                 {
                     onProductsLoadingStateChanged(ProductsLoadingState.ERROR)
                     binding.productsInternetUnavailableButton.setOnClickListener {
-                        viewModel.refreshProducts()
+                        val query = binding.inputSearch.text.toString()
+                        viewModel.refreshProducts(query)
                         onProductsListEmpty()
                     }
                 }
@@ -104,9 +139,14 @@ class ProductsFragment : Fragment() {
         }
     }
 
+    private fun dismissKeyboard(windowToken: IBinder) {
+        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        imm?.hideSoftInputFromWindow(windowToken, 0)
+    }
+
     private fun navigateToDetailsScreen(productId: String) {
-        val direction = ProductsFragmentDirections
-                .actionProductListFragmentToProductDetailsFragment(productId)
+        val direction = SearchFragmentDirections
+                .actionProductSearchFragmentToProductDetailsFragment(productId)
         requireView().findNavController().navigate(direction)
     }
 
