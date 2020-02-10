@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.olehka.datakick.R
 import com.olehka.datakick.repository.model.Product
-import com.olehka.datakick.repository.model.ProductDiffUtilCallback
 
 class ProductsAdapter(
         private val callback: (id: String) -> Unit
@@ -32,7 +31,7 @@ class ProductsAdapter(
     override fun getItemViewType(position: Int) = position
 
     fun updateProducts(products: List<Product>) {
-        val diffResult = DiffUtil.calculateDiff(ProductDiffUtilCallback(this.products, products))
+        val diffResult = DiffUtil.calculateDiff(ProductsDiffUtilCallback(this.products, products))
         diffResult.dispatchUpdatesTo(this)
         this.products.clear()
         this.products.addAll(products)
